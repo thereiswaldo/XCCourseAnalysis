@@ -28,7 +28,7 @@ def positive_only(x):
     else:
         return 0
 
-def AboveOrEqualToThreshold(x, Threshold=0.05):
+def AboveOrEqualToThreshold(x, Threshold=0.04):
     if x >= Threshold:
         return x
     else:
@@ -42,7 +42,21 @@ def ElevationChange(Elevation):
     ElevationChange = Elevation.diff()
     return ElevationChange
 
-def ElevationGain(ElevationChange):
-    # ElevationGainPositive = ElevationChange.apply(positive_only).sum()
+def ElevationGainFromChange(ElevationChange):
     ElevationGainAboveOrEqualToThreshold = ElevationChange.apply(AboveOrEqualToThreshold).sum()
     return ElevationGainAboveOrEqualToThreshold
+
+def GetElevationGain(Elevation):
+    ElevationGain = ElevationGainFromChange(ElevationChange(Elevation))
+    return ElevationGain
+
+def ReadCourseDataFrame(CourseName):
+    TestInputDirectory = './Course DataFrames/'
+    CourseName =  CourseName + '.csv'
+    try:
+        data = pd.read_csv(TestInputDirectory + CourseName,
+                           sep = ',',
+                           header = 0)
+        return data
+    except IOError:
+        print('cannot open file: ', CourseName)
