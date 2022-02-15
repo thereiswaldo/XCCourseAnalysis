@@ -2,7 +2,7 @@ import unittest
 import XCCourseHelper as XC
 import pandas as pd
 import numpy as np
-from pandas.util.testing import assert_series_equal
+from pandas.util.testing import assert_series_equal, assert_frame_equal
 
 class TestXCCourse(unittest.TestCase):
 
