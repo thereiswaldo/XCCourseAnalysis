@@ -82,5 +82,26 @@ class TestXCCourse(unittest.TestCase):
         self.assertEqual(FortHenry10km.shape[0], 10495)
         self.assertEqual(FortHenry10km.shape[1], 16)
 
+    def test_MakeInitialDataframe(self):
+        df, turn_st_dev, tot_deg_turned, HairpinCount, perim, area = XC.MakeInitialDataframe(self.BayfrontCourse, 'BayfrontCourse.gpx')
+        self.assertEqual(df.shape[0], 9900)
+        self.assertEqual(df.shape[1], 16)
+        self.assertEqual(turn_st_dev, 0.0)
+        self.assertEqual(tot_deg_turned, 0.0)
+        self.assertEqual(HairpinCount, 0)
+        self.assertEqual(perim, 0.0)
+        self.assertEqual(area, 0.0)
+        
+
+    def test_InterpolateGPS(self):
+        # df = self.Western10km
+        df = self.FortHenry10km
+        df = XC.InterpolateGPS(df)
+        self.assertEqual(df.shape[0], 10279)
+        self.assertEqual(df.shape[1], 16)
+        self.assertEqual(df.index[0], 0)
+        self.assertEqual(df.index[-1], 10279)
+        self.assertEqual(df.index[-1], df.index[-1])
+
 if __name__ == '__main__':
     unittest.main()
