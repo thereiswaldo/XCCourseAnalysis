@@ -309,11 +309,7 @@ def plot_ele_max_min(df):
 
 # To be developed
 def angle_between_points(lat, lon):
-    # calculate angle between points
-    # lat and lon are lists of points
-    # returns angle in degrees
-    # print(lat)
-    # print(lon)
+
     bearing_tmp = atan2(
         sin(lon[1] - lon[0]) * cos(lat[1]),
         cos(lat[0]) * sin(lat[1]) - sin(lat[0]) * cos(lat[1]) * cos(lon[1] - lon[0]),
@@ -429,41 +425,11 @@ def HillDetails(df, peaks, mins):
 
 def AddPace(df):
 
-    # drop when distance change is zero for unknown reasons
-    # df = df[df["DistanceChangeInKM"] != 0]
-
     pace_hist = ((df["Time Difference"] / 60) / df["DistanceChangeInKM"]).values
     df["PaceInMinPerKM"] = pace_hist
 
-    # remove spikes (if a value is more than spike_tolerace times larger than the mean of the surrounding values)
-    spike_tolerance = 1.3
-    pace_hist_nospikes = copy.copy(pace_hist)
-    for i in range(len(pace_hist_nospikes)):
-        if i > 1 and i < (len(pace_hist_nospikes) - 2):
-            if pace_hist_nospikes[i] > spike_tolerance * np.mean(
-                [
-                    pace_hist_nospikes[i - 2],
-                    pace_hist_nospikes[i - 1],
-                    pace_hist_nospikes[i + 1],
-                    pace_hist_nospikes[i + 2],
-                ]
-            ):
-                pace_hist_nospikes[i] = np.mean(
-                    [pace_hist_nospikes[i - 2], pace_hist_nospikes[i + 2]]
-                )
-
-    # running average of pace (without spikes), N is width of average
-    N = 23  # N must be 2n+1
-    pace_hist_binned = np.convolve(pace_hist_nospikes, np.ones((N,)) / N, mode="valid")
-
-    # Add Pace
-    df["pace"] = np.nan
-    df["pace"].iloc[int((N - 1) / 2) : -int((N - 1) / 2)] = pace_hist_binned
-
-    # drop outlier in pace (sometimes watch seems to be stopped early or late)
-    df = df.dropna()[(np.abs(stats.zscore(df.dropna()["pace"])) < 3)]
-
-    # PlotPace(df)
+    df["PaceInMinPerKM"] = df["PaceInMinPerKM"].apply(lambda x: x if x < 4.2 else 4.2)
+    df["PaceInMinPerKM"] = savgol_filter(df["PaceInMinPerKM"], 101, 3)
 
     return df
 
@@ -557,7 +523,7 @@ def GetCourseInformation(course, gpx_file):
     )
 
     # Interpolate
-    df = InterpolateGPS(df)
+    # df = InterpolateGPS(df) #blocking for atb
 
     if df["time"].isnull().all() == True:
         print("no time")

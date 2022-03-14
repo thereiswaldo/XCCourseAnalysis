@@ -256,7 +256,7 @@ class TestXCCourse(unittest.TestCase):
         df = XC.InterpolateGPS(df)
         df = XC.AddPace(df)
         self.assertEqual(len(df.columns), 16)
-        self.assertAlmostEqual(df["PaceInMinPerKM"].iloc[0], 2.5211760447948337)
+        self.assertAlmostEqual(df["PaceInMinPerKM"].iloc[0], 2.5347618971093433)
 
     def test_FirstNotNullInColumn(self):
         self.assertEqual(XC.FirstNotNullInColumn(pd.Series([1, 2, 3, None])), 1)
@@ -292,31 +292,31 @@ class TestXCCourse(unittest.TestCase):
         )
         self.assertEqual(CourseInformation["Number of Hairpin Turns"].iloc[0], 4)
         self.assertAlmostEqual(
-            CourseInformation["Hill Stdev"].iloc[0], 8.99847313119162
+            CourseInformation["Hill Stdev"].iloc[0], 8.938635872380793
         )
         self.assertEqual(
             CourseInformation["Tallest Hill (m)"].iloc[0], 28.30000000000001
         )
         self.assertEqual(
-            CourseInformation["Length of tallest hill (m)"].iloc[0], 0.6181938170834114
+            CourseInformation["Length of tallest hill (m)"].iloc[0], 0.6234376508579444
         )
         self.assertEqual(CourseInformation["Number of Hills"].iloc[0], 9)
         self.assertEqual(
-            CourseInformation["Total Elevation Gain (m)"].iloc[0], 3195.599999999928
+            CourseInformation["Total Elevation Gain (m)"].iloc[0], 174.39999999999978
         )
         self.assertEqual(
             CourseInformation["Total Elevation Gain Unfiltered (m)"].iloc[0],
-            3195.5999999999253,
+            174.39999999999995,
         )
-        self.assertEqual(CourseInformation["Start Lat"].iloc[0], 42.962418)
-        self.assertEqual(CourseInformation["Start Lon"].iloc[0], -81.301822)
+        self.assertEqual(CourseInformation["Start Lat"].iloc[0], 42.962597)
+        self.assertEqual(CourseInformation["Start Lon"].iloc[0], -81.301311)
         self.assertAlmostEqual(
             CourseInformation["Course Ave. GAP - Strava"].iloc[0],
-            -28591624.014647037,  # way off and weird, previously had -53.72
+            1.010589400735719,  # way off and weird, previously had -53.72
         )
         self.assertAlmostEqual(
             CourseInformation["Course Ave. GAP - Minetti"].iloc[0],
-            31326189.92951048,  # should be 87.11
+            1.0224953726590489,  # should be 87.11
         )
 
     def test_XCMain(self):
