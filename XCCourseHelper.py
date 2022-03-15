@@ -552,8 +552,8 @@ def GetCourseInformation(course, gpx_file):
     #     PlotElevationAndPace(course, df)
 
     GAP = GradeAdjustedPace.GAP(df)
-    courseAverageGradeAdjustedPaceStrava = GAP.getStravaCourseGAP()
-    courseAverageGradeAdjustedPaceMinetti = GAP.getMinettiCourseGAP()
+    courseAverageGradeAdjustedPaceStrava = GAP.getStravaCourseGAPMean()
+    courseAverageGradeAdjustedPaceMinetti = GAP.getMinettiCourseGAPMean()
 
     CourseInformation = pd.DataFrame(
         {

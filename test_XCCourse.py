@@ -312,11 +312,11 @@ class TestXCCourse(unittest.TestCase):
         self.assertEqual(CourseInformation["Start Lon"].iloc[0], -81.301311)
         self.assertAlmostEqual(
             CourseInformation["Course Ave. GAP - Strava"].iloc[0],
-            1.010589400735719,  # way off and weird, previously had -53.72
+            1.03710776834784,  # way off and weird, previously had -53.72
         )
         self.assertAlmostEqual(
             CourseInformation["Course Ave. GAP - Minetti"].iloc[0],
-            1.0224953726590489,  # should be 87.11
+            1.0346704338872899,  # should be 87.11
         )
 
     def test_XCMain(self):

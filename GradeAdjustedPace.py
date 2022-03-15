@@ -15,12 +15,14 @@ class GAP:
             / (df["Distance"] - df["Distance"].shift(1))
             / 1000
         ) * 100
-        # Max gradient is 100%
-        df["Gradient"] = df["Gradient"].apply(lambda x: x if x < 100 else 100)
-        # Min gradient is -100%
-        df["Gradient"] = df["Gradient"].apply(lambda x: x if x > -100 else -100)
-        df["Gradient"] = savgol_filter(df["Gradient"], 101, 3)
+        # # Max gradient is 100%
+        # df["Gradient"] = df["Gradient"].apply(lambda x: x if x < 100 else 100)
+        # # Min gradient is -100%
+        # df["Gradient"] = df["Gradient"].apply(lambda x: x if x > -100 else -100)
+        # df["Gradient"] = savgol_filter(df["Gradient"], 21, 2)
+        df["Gradient"] = df["Gradient"].rolling(2).mean()
         self.df = df
+        return self.df
 
     def stravaGapParameters(self):
         strava_df = pd.read_csv(
@@ -38,6 +40,9 @@ class GAP:
 
         self.popt, pcov = curve_fit(polynomialApproximation, xdata, ydata)
 
+    # def polynomialApproximation(x, a, b, c, d, e, f):
+    #     return a * x ** 5 + b * x ** 4 + c * x ** 3 + d * x ** 2 + e * x + f
+
     def minettiGapParameters(self):
         minetti_df = pd.read_csv(
             "Gradient Adjustment/Minetti-2002 Equal Energy Cost.csv",
@@ -54,7 +59,7 @@ class GAP:
 
         self.popt, pcov = curve_fit(polynomialApproximation, xdata, ydata)
 
-    def GapCalculation(self):
+    def GapCalculation(self, name):
         f = (
             lambda x: self.popt[0] * x ** 5
             - self.popt[1] * x ** 4
@@ -63,17 +68,25 @@ class GAP:
             + self.popt[4] * x
             + self.popt[5]
         )
-        self.df["GAP"] = self.df["Gradient"].apply(f)
+        self.df[name + " GAP"] = self.df["Gradient"].apply(f)
 
     def getStravaCourseGAP(self):
         self.gradientCalculation()
         self.stravaGapParameters()
-        self.GapCalculation()
-        return self.df["GAP"].mean()
+        name = "Strava"
+        self.GapCalculation(name)
+        return self.df[name + " GAP"]
+
+    def getStravaCourseGAPMean(self):
+        return self.getStravaCourseGAP().mean()
 
     def getMinettiCourseGAP(self):
         self.gradientCalculation()
         self.minettiGapParameters()
-        self.GapCalculation()
-        return self.df["GAP"].mean()
+        name = "Minetti"
+        self.GapCalculation(name)
+        return self.df[name + " GAP"]
+
+    def getMinettiCourseGAPMean(self):
+        return self.getMinettiCourseGAP().mean()
 
